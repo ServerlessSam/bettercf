@@ -1,0 +1,64 @@
+{
+    "ManagementBucket" : {
+        "Type" : "AWS::S3::Bucket",
+        "Properties" : {
+            "BucketName" : {
+                "Fn::Join" : [
+                    "-",
+                    [
+                        "cf-management-bucket",
+                        {
+                            "Fn::Select" : [
+                                4,
+                                {
+                                    "Fn::Split" : [
+                                        "-",
+                                        {
+                                            "Fn::Select" : [
+                                                2,
+                                                {
+                                                    "Fn::Split" : [
+                                                        "/",
+                                                        {
+                                                            "Ref" : "AWS::StackId"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+
+                    ]
+                ]
+            },
+            "ObjectLockConfiguration" : {
+                "ObjectLockEnabled" : "Enabled",
+                "Rule" : {
+                    "DefaultRetention" : {
+                        "Years" : 10
+                      }
+                  }
+              },
+            "ObjectLockEnabled" : true,
+            "OwnershipControls" : {
+                "Rules": [
+                    {
+                        "ObjectOwnership": "BucketOwnerEnforced"
+                    }
+                ]
+            },
+            "PublicAccessBlockConfiguration" : {
+                "BlockPublicAcls" : true,
+                "BlockPublicPolicy" : true,
+                "IgnorePublicAcls" : true,
+                "RestrictPublicBuckets" : true
+              },
+            "VersioningConfiguration" : {
+                "Status" : "Enabled"
+              }
+          }
+      }
+}

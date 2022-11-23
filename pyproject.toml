@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "cloudformation-state-management"
+version = "0.1.0"
+description = ""
+authors = ["ServerlessSam <samuel.t.lock@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "3.10.*"
+boto3 = "^1.24.86"
+data-file-merge = "^0.2"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

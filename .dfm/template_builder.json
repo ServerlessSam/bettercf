@@ -1,0 +1,23 @@
+{
+    "SourceFiles" : [
+        {
+            "SourceFileLocation" : {
+                "Path" : "systems/${SYSTEM_NAME}/base_template.json"
+            },
+            "SourceFileNode" : "$",
+            "DestinationFileNode" : "$"
+        },
+        {
+            "SourceFileLocation" : {
+                "Path" : "systems/${SYSTEM_NAME}/resources/**/*.json"
+            },
+            "SourceFileNode" : "$",
+            "DestinationFileNode" : "$.Resources"
+        }
+    ],
+    "DestinationFile" : {
+        "DestinationFileLocation" : {
+            "Path" : "output/${SYSTEM_NAME}.json"
+        }
+    }
+}

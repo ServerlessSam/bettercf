@@ -1,0 +1,23 @@
+{
+    "AWSTemplateFormatVersion":"2010-09-09",
+    "Description":"A management template. Deployed via `... init` (TODO)",
+    "Parameters":{
+        "BucketName" : {
+            "Type" : "String",
+            "Description" : "Name of S3 bucket used to store deployed templates",
+            "Default" : "cf-manangement-bucket"
+        }
+    },
+    "Resources":{},
+    "Outputs":{
+        "ManagementBucketName" : {
+            "Description" : "Name of S3 bucket used to store deployed templates",
+            "Value" : {
+                "Ref" : "ManagementBucket"
+            },
+            "Export" : {
+              "Name" : "CfManagementBucketName"
+            }
+          }
+    }
+ }

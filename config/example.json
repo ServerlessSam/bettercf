@@ -1,0 +1,15 @@
+{
+    "Version" : "0.1",
+    "System" : {
+        "Name" : "foo",
+        "Version" : "boo"
+    },
+    "EnvType" : "bar",
+    "StackIdentifier" : "baz",
+    "Account" : "bing",
+    "RoleArn" : null,
+    "TemplateParameters" : {
+        "hello": "world"
+    },
+    "ResourceOverrides" : {}
+}

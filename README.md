@@ -1,2 +1,3 @@
-# cloudformation-state-management
- 
+# Better CloudFormation
+
+CloudFormation but better
