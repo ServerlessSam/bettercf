@@ -1,0 +1,14 @@
+{
+    "ManagementBucketNameParam" : {
+        "Type" : "AWS::SSM::Parameter",
+        "Properties" : {
+            "Description" : "The name of the management bucket for BetterCF",
+            "Name" : "BetterCF-management-bucket-name",
+            "Tier" : "Standard",
+            "Type" : "String",
+            "Value" : {
+                "Ref" : "ManagementBucket"
+            }
+          }
+      }
+}

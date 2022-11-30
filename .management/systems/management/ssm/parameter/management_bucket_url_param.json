@@ -1,0 +1,17 @@
+{
+    "ManagementBucketUrlParam" : {
+        "Type" : "AWS::SSM::Parameter",
+        "Properties" : {
+            "Description" : "The url of the management bucket for BetterCF",
+            "Name" : "BetterCF-management-bucket-url",
+            "Tier" : "Standard",
+            "Type" : "String",
+            "Value" : {
+                "Fn::GetAtt" : [ 
+                    "ManagementBucket",
+                    "WebsiteURL"
+            ]
+            }
+          }
+      }
+}
