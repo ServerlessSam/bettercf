@@ -14,18 +14,19 @@ class Version():
                 parsed_version = self.major_minor(version_string)
                 self.major = parsed_version[0]
                 self.minor = parsed_version[1]
-                self.micro = None
             except:
                 raise Exception(f"Version '{version_string};' is not of the 'X.Y' or 'X.Y.Z' format.")
             
     def major_version_increment(self):
         self.major += 1
         self.minor = 0
-        self.micro = 0 if self.micro else None
+        if hasattr(self, "micro"):
+            self.micro = 0
 
     def minor_version_increment(self):
         self.minor += 1
-        self.micro = 0 if self.micro else None
+        if hasattr(self, "micro"):
+            self.micro = 0
 
     def micro_version_increment(self):
         self.micro += 1
@@ -34,7 +35,7 @@ class Version():
         if major_increment and micro_increment:
             raise Exception("Cannot specify a major AND micro version increment at the same time.")
 
-        if micro_increment and self.micro:
+        if micro_increment and not hasattr(self, "micro"):
             raise Exception(f"Attempting to do a micro version increment for a version without a micro")
         if major_increment:
             self.major_version_increment()
@@ -45,19 +46,23 @@ class Version():
 
     #TODO support other versioning syntax? E.g vX.Y?
     def get_version_string(self):
-        to_return = [self.major, self.minor]
-        if self.micro:
-            to_return.append(self.micro)
+        to_return = [str(self.major), str(self.minor)]
+        if hasattr(self, "micro"):
+            to_return.append(str(self.micro))
         return ".".join(to_return)
 
     @staticmethod
     def major_minor_micro(version):
-        major, minor, micro = re.search('(\d+)\.(\d+)\.(\d+)', version).groups()
-
-        return int(major), int(minor), int(micro)
+        try:
+            major, minor, micro = re.search('^(\d+)\.(\d+)\.(\d+)$', version).groups()
+            return int(major), int(minor), int(micro)
+        except:
+            raise Exception(f"Could not detect a recognizable version in: {version}")
 
     @staticmethod
     def major_minor(version):
-        major, minor = re.search('(\d+)\.(\d+)', version).groups()
-
-        return int(major), int(minor)
+        try:
+            major, minor = re.search('^(\d+)\.(\d+)$', version).groups()
+            return int(major), int(minor)
+        except:
+            raise Exception(f"Could not detect a recognizable version in: {version}")

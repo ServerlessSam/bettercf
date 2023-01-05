@@ -1,7 +1,7 @@
 from src.version import Version
 import boto3, time
 
-def get_latest_version(versions:list(str)):
+def get_latest_version(versions:list[str]):
         if Version.major_minor(versions[0]): #TODO this assumed that all versions are of the same syntax. Perhaps we need a better check?
             return max(versions, key=Version.major_minor)
         elif Version.major_minor_micro(versions[0]):
@@ -10,10 +10,33 @@ def get_latest_version(versions:list(str)):
             raise Exception(f"Versions (e.g '{versions[0]}' are not of the 'X.Y' or 'X.Y.Z' format")
 
 def get_management_bucket_name():
-    return
+    client = boto3.client("ssm")
+    try:
+        to_return = client.get_parameter(
+            Name=
+                "/BetterCF/.management/BetterCF-management-bucket-name",
+        )["Parameter"]["Value"]
+        return to_return
+    except:
+        raise Exception("Hmm") #TODO
+
+def get_management_bucket_location():
+    client = boto3.client("s3")
+    bucket_name = get_management_bucket_name()
+    try:
+        to_return = client.get_bucket_location(
+            Bucket=bucket_name
+        )["LocationConstraint"]
+        return to_return
+    except:
+        raise Exception("Hmmmmm") #TODO
 
 def get_management_bucket_url():
-    return
+    bucket_name = get_management_bucket_name()
+    bucket_region = get_management_bucket_location()
+    return f"https://{bucket_name}.s3.{bucket_region}.amazonaws.com"
+    
+
 
 def cfn_create_or_update(StackName:str, boto3_kwargs:dict):
     try:

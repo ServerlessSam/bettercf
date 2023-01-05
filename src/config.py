@@ -1,21 +1,24 @@
 from src.system import System
-import boto3, json, time
+from src.account import Account
+import json
 from pathlib import Path
 from src.file_handling import load_file_to_dict
 from src.version import Version
-from src.utils import cfn_create_or_update, get_management_bucket_name, get_management_bucket_url
+from src.utils import cfn_create_or_update, get_management_bucket_url
 from src.region import Region
+from dataclasses import dataclass
 
+@dataclass
 class Config():
     version : Version
     system : System
     env_type : str
     region : Region
     identifier : str
-    account : str
-    role_arn : str
-    template_parameters : dict
-    resource_overrides : dict
+    #account : Account
+    role_arn : str=None
+    template_parameters : dict=None
+    resource_overrides : dict=None
 
     def deploy(self, local_template_override:dict):
         '''
@@ -24,7 +27,7 @@ class Config():
         # Check parameters
         
         STACK_NAME = self.generate_stack_name()
-        object_key = f'{self.system.name}/{self.system.version}'
+        object_key = f'{self.system.name}/{self.system.version.get_version_string()}'
 
         boto3_kwargs = {
             "StackName" : STACK_NAME,
@@ -60,12 +63,12 @@ class Config():
         cfn_create_or_update(STACK_NAME, boto3_kwargs)
 
     def generate_stack_name(self):
-        return [
+        return "-".join([
             self.system.name,
             self.env_type,
-            self.region,
+            self.region.code,
             self.identifier
-        ].join("-")
+        ]).lower()
 
     @staticmethod
     def load_config_from_file(file_path:Path):
@@ -73,14 +76,14 @@ class Config():
         return Config(
             version=Version(config_dict["Version"]),
             system=System(
-                name=config_dict["System"]["Name"],
+                system_name=config_dict["System"]["Name"],
                 version=Version(config_dict["System"]["Version"])
             ),
             env_type=config_dict["EnvType"],
-            region=Region(config_dict["Region"]),
+            region=Region(name=config_dict["Region"]),
             identifier=config_dict["Identifier"],
-            account=config_dict["Account"],
+            #account=config_dict["Account"],
             role_arn=config_dict["RoleArn"],
             template_parameters=config_dict["TemplateParameters"],
-            resource_overrides=config_dict["ResourceOverride"]
+            resource_overrides=config_dict["ResourceOverrides"]
         )

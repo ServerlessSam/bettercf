@@ -1,10 +1,7 @@
-import importlib, boto3, time, json
+import boto3
 from pathlib import Path
-from src import file_handling
-from src.system import System
-from src.config import Config
 from src.utils import cfn_create_or_update, get_management_bucket_name
-dfm = importlib.import_module("data-file-merge") #TODO remove this workaroudn when dfm v0.3 is released
+from dfm.config import BuildConfig
 
 class BetterCfInstance():
 
@@ -15,21 +12,19 @@ class BetterCfInstance():
     '''
     def initialise(self):
         STACK_NAME = "BetterCF-management"
-        System.build(
-            system_name="management",
-            root_path_override=Path(__file__).parent.parent.joinpath(".management").resolve()
+
+        cfg = BuildConfig.load_config_from_file(
+            file_path=Path(__file__).parent.parent.joinpath(".dfm/template_builder.json").resolve(),
+            root_path=Path(__file__).parent.parent.joinpath(".management").resolve(),
+            parameters={
+                "SystemName" : "bettercf-management"
+            }
         )
-        template = json.dumps(Path(__file__).parent.parent.joinpath(".management/output/management.json").resolve())
-        
-        #TODO address this when dfm v0.3 is released and build() returns the object too.
-        #template = System.build(
-        #     system_name="management",
-        #     root_path_override=Path(__file__).parent.parent.joinpath(".management").resolve()
-        # )
+        template = cfg.build()
 
         boto3_kwargs = {
             "StackName" : STACK_NAME,
-            "TemplateBody" : template,
+            "TemplateBody" : str(template),
             # "Capabilities" : [
             #     "CAPABILITY_AUTO_EXPAND",
             #     "CAPABILITY_NAMED_IAM"
@@ -42,19 +37,9 @@ class BetterCfInstance():
     def teardown(self):
         BUCKET_NAME= get_management_bucket_name()
         STACK_NAME = "BetterCF-management"
-        s3_client = boto3.client('s3')
-
-        s3_client.delete_objects(
-            Bucket=BUCKET_NAME,
-            Delete={
-                'Objects': [
-                    {
-                        'Key': '*'
-                    },
-                ],
-            }
-        )
-
+        s3 = boto3.resource('s3')
+        bucket = s3.Bucket(BUCKET_NAME)
+        bucket.object_versions.delete()
         cf_client = boto3.client("cloudformation")
         cf_client.delete_stack(StackName=STACK_NAME)
         return

@@ -38,7 +38,8 @@
                 "ObjectLockEnabled" : "Enabled",
                 "Rule" : {
                     "DefaultRetention" : {
-                        "Years" : 10
+                        "Years" : 10,
+                        "Mode" : "GOVERNANCE"
                       }
                   }
               },

@@ -5,11 +5,16 @@ description = ""
 authors = ["ServerlessSam <samuel.t.lock@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "3.10.*"
+python = "3.11.*"
 boto3 = "^1.24.86"
-data-file-merge = "^0.2"
+data-file-merge = "^0.3"
 
 [tool.poetry.dev-dependencies]
+
+[tool.pytest.ini_options]
+pythonpath = [
+  ".", "src",
+]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

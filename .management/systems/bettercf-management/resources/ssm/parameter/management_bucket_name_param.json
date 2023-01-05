@@ -3,7 +3,7 @@
         "Type" : "AWS::SSM::Parameter",
         "Properties" : {
             "Description" : "The name of the management bucket for BetterCF",
-            "Name" : "BetterCF-management-bucket-name",
+            "Name" : "/BetterCF/.management/BetterCF-management-bucket-name",
             "Tier" : "Standard",
             "Type" : "String",
             "Value" : {
