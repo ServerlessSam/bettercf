@@ -10,6 +10,7 @@ boto3 = "^1.24.86"
 data-file-merge = "^0.3"
 
 [tool.poetry.dev-dependencies]
+moto = {extras = ["cloudformation", "s3"], version = "^4.0.13"}
 
 [tool.pytest.ini_options]
 pythonpath = [

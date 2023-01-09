@@ -57,7 +57,7 @@ class Version():
             major, minor, micro = re.search('^(\d+)\.(\d+)\.(\d+)$', version).groups()
             return int(major), int(minor), int(micro)
         except:
-            raise Exception(f"Could not detect a recognizable version in: {version}")
+            raise Exception(f"{version} is not a recognizable version.")
 
     @staticmethod
     def major_minor(version):
@@ -65,4 +65,4 @@ class Version():
             major, minor = re.search('^(\d+)\.(\d+)$', version).groups()
             return int(major), int(minor)
         except:
-            raise Exception(f"Could not detect a recognizable version in: {version}")
+            raise Exception(f"{version} is not a recognizable version.")

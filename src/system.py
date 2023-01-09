@@ -36,7 +36,7 @@ class System():
         BUCKET_NAME = get_management_bucket_name()
         s3_client = boto3.client('s3')
         s3_client.put_object(
-            Body=body_str if body_str else json.dumps(load_file_to_dict(self.dfm_config.destination_file.location.resolved_paths[0])).encode('utf-8'),
+            Body=body_str if body_str else json.dumps(load_file_to_dict(self.dfm_config.root_path / self.dfm_config.destination_file.location.substituted_path)).encode('utf-8'),
             Bucket=BUCKET_NAME,
             Key=f"{self.name}/{self.version.get_version_string()}"
         )
@@ -55,10 +55,12 @@ class System():
             #ContinuationToken='string' #TODO deal with continuation
         )
         versions_present = []
+        if "Contents" not in response:
+            raise Exception(f"No versions of system: {system_name} detected in management bucket: {BUCKET_NAME}")
         for file in response["Contents"]:
-            if file["Key"].split("/")[-1]: #This will be an empty string when s3.list_objects_v2 provides a subfolder instead of an object. Must skip this.
-                versions_present.append(( #Tuple of major, minor
+            if file["Key"].split("/")[-1]: #This will be an empty string when s3.list_objects_v2 provides a subfolder instead of an object. Must skip this scenario.
+                versions_present.append( #Tuple of major, minor
                     file["Key"].split("/")[-1]
-                ))
+                )
         return get_latest_version(versions_present)
         

@@ -84,7 +84,10 @@ class TestVersion:
         ver.major_version_increment()
         assert (ver.major, ver.minor, ver.micro) == (2,0,0)
 
-    
+    '''
+    minor_version_increment() Class Function Tests
+    '''
+
     def test_minor_version_increment_no_micro_happy_path(self):
         ver = Version("1.2")
         ver.minor_version_increment()
@@ -95,6 +98,10 @@ class TestVersion:
         ver.minor_version_increment()
         assert (ver.major, ver.minor, ver.micro) == (1,3,0)
 
+    '''
+    micro_version_increment() Class Function Tests
+    '''
+
     def test_micro_version_increment_with_micro_happy_path(self):
         ver = Version("1.2.3")
         ver.micro_version_increment()
@@ -104,6 +111,10 @@ class TestVersion:
         ver = Version("1.2")
         with pytest.raises(Exception):
             ver.micro_version_increment()
+
+    '''
+    auto_increment_version() Class Function Tests
+    '''
 
     def test_auto_increment_version_with_micro_happy_path(self):
         ver = Version("1.2.3")
