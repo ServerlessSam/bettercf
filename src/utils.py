@@ -2,11 +2,13 @@ from src.version import Version
 import boto3, time
 
 def get_latest_version(versions:list[str]):
-        if Version.major_minor(versions[0]): #TODO this assumed that all versions are of the same syntax. Perhaps we need a better check?
+        try: #TODO this assumed that all versions are of the same syntax. Perhaps we need a better check?
             return max(versions, key=Version.major_minor)
-        elif Version.major_minor_micro(versions[0]):
+        except:
+            pass #TODO I don't think this is a good pattern
+        try:
             return max(versions, key=Version.major_minor_micro)
-        else:
+        except:
             raise Exception(f"Versions (e.g '{versions[0]}' are not of the 'X.Y' or 'X.Y.Z' format")
 
 def get_management_bucket_name():
@@ -27,7 +29,7 @@ def get_management_bucket_location():
         to_return = client.get_bucket_location(
             Bucket=bucket_name
         )["LocationConstraint"]
-        return to_return
+        return to_return if to_return else "us-east-1" # As per AWS docs, a null response = us-east-1
     except:
         raise Exception("Hmmmmm") #TODO
 

@@ -2,7 +2,6 @@ from src.system import System
 from src.version import Version
 from moto import mock_s3
 import boto3, pytest, os, json
-from src import utils
 from pathlib import Path
 
 class TestSystem:
@@ -121,7 +120,7 @@ class TestSystem:
 
         assert obj_in_s3 == b"foo"
 
-    mock_s3
+    @mock_s3
     def test_build_and_push_happy_path(self, monkeypatch):
         def get_mocked_management_bucket_name():
             return "cf-management-bucket-123456789"
