@@ -144,3 +144,31 @@ class TestUtils:
         )
         conn = boto3.client("cloudformation")
         assert conn.list_stacks()["StackSummaries"][0]["StackName"] == "foo"
+
+    def test_is_non_empty_string_happy_path(self):
+        string = 'foo'
+        assert is_non_empty_string(string) == True
+
+    def test_is_non_empty_string_max_length_happy_path(self):
+        string = 'foo'
+        assert is_non_empty_string(string, 3) == True
+        assert is_non_empty_string(string, 4) == True
+
+    def test_is_non_empty_string_max_length_too_long(self):
+        string = 'foo'
+        assert is_non_empty_string(string, 2) == False
+
+    def test_is_non_empty_string_empty_string_fails(self):
+        string = ""
+        assert is_non_empty_string(string) == False
+        assert is_non_empty_string(string, 3) == False
+
+    def test_is_non_empty_string_null_string_fails(self):
+        string = None
+        assert is_non_empty_string(string) == False
+        assert is_non_empty_string(string, 3) == False
+
+    def test_is_non_empty_string_dict_input_fails(self):
+        string = {"foo", "bar"}
+        assert is_non_empty_string(string) == False
+        assert is_non_empty_string(string, 99) == False

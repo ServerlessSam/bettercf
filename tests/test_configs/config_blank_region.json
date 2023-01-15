@@ -1,0 +1,13 @@
+{
+    "Version" : "1.0",
+    "System" : {
+        "Name" : "foo",
+        "Version" : "0.1"
+    },
+    "EnvType" : "Prod",
+    "Region" : "",
+    "Identifier" : "bar",
+    "RoleArn" : null,
+    "TemplateParameters" : {},
+    "ResourceOverrides" : {}
+}

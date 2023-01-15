@@ -4,9 +4,9 @@ import json
 from pathlib import Path
 from src.file_handling import load_file_to_dict
 from src.version import Version
-from src.utils import cfn_create_or_update, get_management_bucket_url
+from src.utils import cfn_create_or_update, get_management_bucket_url, is_non_empty_string
 from src.region import Region
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 @dataclass
 class Config():
@@ -17,10 +17,10 @@ class Config():
     identifier : str
     #account : Account
     role_arn : str=None
-    template_parameters : dict=None
-    resource_overrides : dict=None
+    template_parameters : dict=field(default_factory=dict)
+    resource_overrides : dict=field(default_factory=dict)
 
-    def deploy(self, local_template_override:dict):
+    def deploy(self, local_template_override:dict=None):
         '''
         Takes a cloudformation template from S3 and creates/updates the stack in AWS CloudFormation
         '''
@@ -73,6 +73,57 @@ class Config():
     @staticmethod
     def load_config_from_file(file_path:Path):
         config_dict = load_file_to_dict(file_path)
+
+        # Check for unexpected keys
+        ALL_EXPECTED_KEYS = [
+            "Version",
+            "System",
+            "EnvType",
+            "Region",
+            "Identifier",
+            "RoleArn",
+            "TemplateParameters",
+            "ResourceOverrides"
+        ]
+        for key in config_dict:
+            if key not in ALL_EXPECTED_KEYS:
+                raise Exception("Unexpected key '{key}' detected in config file.")
+
+        # Check all expected keys are present
+        for key in ALL_EXPECTED_KEYS:
+            if key not in config_dict:
+                raise Exception(f"Config Parsing Failure: Config file is missing required {key} key.")
+
+        # String key checks
+        STRING_KEYS=[
+            "Version",
+            "EnvType",
+            "Region",
+            "Identifier",
+        ]
+
+        for key in STRING_KEYS:
+            if not is_non_empty_string(config_dict[key]):
+                raise Exception(f'Config Parsing Failure: Config {key} value: {config_dict[key]} must be a non-empty string.')
+    
+        # System checks
+        SYSTEM_KEYS = ["Name", "Version"]
+        for key in SYSTEM_KEYS:
+            if key not in config_dict["System"]:
+                raise Exception(f"Config Parsing Failure: Config file's System is missing required {key} key.")
+            if not is_non_empty_string(config_dict["System"][key]):
+                raise Exception(f'Config Parsing Failure: Config system\'s {key} value: {config_dict["System"][key]} must be a non-empty string.')
+        
+        # Role Arn checks
+        if not (is_non_empty_string(config_dict["RoleArn"]) or config_dict["RoleArn"] == None):
+            raise Exception(f'Config Parsing Failure: Config RoleArn value {config_dict["RoleArn"]} must be a non-empty string or null.')
+
+        # Dict key checks
+        EXPECTED_DICT_KEYS = ["TemplateParameters", "ResourceOverrides"]
+        for key in EXPECTED_DICT_KEYS:
+            if not (type(config_dict[key]) == dict or config_dict[key] == None):
+                raise Exception(f'Config Parsing Failure: Config {key} value {str(config_dict[key])} must be a dictionary or null.')
+
         return Config(
             version=Version(config_dict["Version"]),
             system=System(

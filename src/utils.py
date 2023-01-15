@@ -68,3 +68,11 @@ def cfn_create_or_update(StackName:str, boto3_kwargs:dict):
         raise Exception(f"Stack creation failed: {stack_state}")
     else:
         print(f"Stack '{StackName}' created/updated successfully.")
+
+def is_non_empty_string(string:str, max_length:int=None):
+    if not (type(string) == str and string):
+            return False
+    elif max_length:
+        if len(string) > max_length:
+            return False
+    return True
