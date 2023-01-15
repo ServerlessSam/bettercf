@@ -1,6 +1,6 @@
 import boto3
 from pathlib import Path
-from src.utils import cfn_create_or_update, get_management_bucket_name
+from src.utils import cfn_create_or_update, cfn_delete_stack, get_management_bucket_name
 from dfm.config import BuildConfig
 
 class BetterCfInstance():
@@ -39,7 +39,6 @@ class BetterCfInstance():
         STACK_NAME = "BetterCF-management"
         s3 = boto3.resource('s3')
         bucket = s3.Bucket(BUCKET_NAME)
-        bucket.object_versions.delete()
-        cf_client = boto3.client("cloudformation")
-        cf_client.delete_stack(StackName=STACK_NAME)
+        bucket.object_versions.delete() # Note this will fail for governance mode buckets
+        cfn_delete_stack(STACK_NAME)
         return

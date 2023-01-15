@@ -20,6 +20,7 @@ class Config():
     template_parameters : dict=field(default_factory=dict)
     resource_overrides : dict=field(default_factory=dict)
 
+    #TODO add stack tags with version being deployed
     def deploy(self, local_template_override:dict=None):
         '''
         Takes a cloudformation template from S3 and creates/updates the stack in AWS CloudFormation

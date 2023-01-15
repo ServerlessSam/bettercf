@@ -145,6 +145,25 @@ class TestUtils:
         conn = boto3.client("cloudformation")
         assert conn.list_stacks()["StackSummaries"][0]["StackName"] == "foo"
 
+    @mock_cloudformation
+    def test_cfn_delete_stack_happy_path(self):
+        cfn_create_or_update(
+            StackName='foo',
+            boto3_kwargs={
+            "StackName" : 'foo',
+            "TemplateBody" : '{"AWSTemplateFormatVersion":"2010-09-09","Description":"A test template","Resources":{},"Outputs":{}}',
+            "TimeoutInMinutes" : 30,
+            "Capabilities" : [
+                "CAPABILITY_AUTO_EXPAND",
+                "CAPABILITY_NAMED_IAM"
+            ],
+            "OnFailure" :'ROLLBACK',
+        }
+        )
+        cfn_delete_stack("foo")
+        conn = boto3.client("cloudformation")
+        assert not conn.list_stacks()["StackSummaries"]
+
     def test_is_non_empty_string_happy_path(self):
         string = 'foo'
         assert is_non_empty_string(string) == True

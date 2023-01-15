@@ -1,10 +1,10 @@
 {
-    "Version" : "1.0",
+    "Version" : "0.1",
     "System" : {
         "Name" : "foo",
-        "Version" : "0.3"
+        "Version" : "1.0"
     },
-    "EnvType" : "Prod",
+    "EnvType" : "Test",
     "Region" : "eu-west-2",
     "Identifier" : "bar",
     "RoleArn" : null,

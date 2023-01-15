@@ -69,6 +69,24 @@ def cfn_create_or_update(StackName:str, boto3_kwargs:dict):
     else:
         print(f"Stack '{StackName}' created/updated successfully.")
 
+def cfn_delete_stack(StackName:str):
+    client = boto3.client('cloudformation')
+    if len(client.describe_stacks(StackName=StackName)["Stacks"]) != 1:
+        raise Exception(f"Expected exactly one instance of {StackName} stack. Instead {len(client.describe_stacks(StackName=StackName)['Stacks'])} were found.")
+    stack_id = client.describe_stacks(StackName=StackName)["Stacks"][0]["StackId"]
+
+    client.delete_stack(StackName=StackName)
+    stack_state = "IN_PROGRESS"
+
+    while "IN_PROGRESS" in stack_state:
+        time.sleep(5)
+        stack_state = client.describe_stacks(StackName=stack_id)["Stacks"][0]["StackStatus"]
+    if stack_state  in ["DELETE_COMPLETE"] :
+        print(f"Stack '{StackName}' deleted successfully.")
+    else:
+        raise Exception(f"Stack deletion failed: {stack_state}")
+            
+
 def is_non_empty_string(string:str, max_length:int=None):
     if not (type(string) == str and string):
             return False
