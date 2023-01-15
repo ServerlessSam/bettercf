@@ -1,6 +1,6 @@
 import boto3, json
 from pathlib import Path
-from src.file_handling import load_file_to_dict
+from dfm.file_types import JsonFileType
 from src.utils import get_latest_version, get_management_bucket_name
 from src.version import Version
 from dfm.config import BuildConfig
@@ -36,7 +36,7 @@ class System():
         BUCKET_NAME = get_management_bucket_name()
         s3_client = boto3.client('s3')
         s3_client.put_object(
-            Body=body_str if body_str else json.dumps(load_file_to_dict(self.dfm_config.root_path / self.dfm_config.destination_file.location.substituted_path)).encode('utf-8'),
+            Body=body_str if body_str else json.dumps(JsonFileType.load_from_file(self.dfm_config.root_path / self.dfm_config.destination_file.location.substituted_path)).encode('utf-8'),
             Bucket=BUCKET_NAME,
             Key=f"{self.name}/{self.version.get_version_string()}"
         )

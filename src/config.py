@@ -2,7 +2,7 @@ from src.system import System
 from src.account import Account
 import json
 from pathlib import Path
-from src.file_handling import load_file_to_dict
+from dfm.file_types import JsonFileType
 from src.version import Version
 from src.utils import cfn_create_or_update, get_management_bucket_url, is_non_empty_string
 from src.region import Region
@@ -72,7 +72,7 @@ class Config():
 
     @staticmethod
     def load_config_from_file(file_path:Path):
-        config_dict = load_file_to_dict(file_path)
+        config_dict = JsonFileType.load_from_file(file_path)
 
         # Check for unexpected keys
         ALL_EXPECTED_KEYS = [
