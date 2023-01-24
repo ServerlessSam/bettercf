@@ -35,15 +35,31 @@
                 ]
             },
             "ObjectLockConfiguration" : {
-                "ObjectLockEnabled" : "Enabled",
-                "Rule" : {
-                    "DefaultRetention" : {
-                        "Years" : 10,
-                        "Mode" : "GOVERNANCE"
-                      }
-                  }
-              },
-            "ObjectLockEnabled" : true,
+                "Fn::If": [
+                    "BucketHasLocking",
+                    {
+                        "ObjectLockEnabled" : "Enabled",
+                        "Rule" : {
+                            "DefaultRetention" : {
+                                "Years" : 10,
+                                "Mode" : {
+                                    "Ref" : "BucketType"
+                                }
+                              }
+                          }
+                      },
+                    {
+                        "Ref" : "AWS::NoValue"
+                    }
+                ]
+            },
+            "ObjectLockEnabled" : {
+                "Fn::If": [
+                    "BucketHasLocking",
+                    true,
+                    false
+                ]
+            },
             "OwnershipControls" : {
                 "Rules": [
                     {

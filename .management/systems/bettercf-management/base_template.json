@@ -6,6 +6,34 @@
             "Type" : "String",
             "Description" : "Name of S3 bucket used to store deployed templates",
             "Default" : "cf-manangement-bucket"
+        },
+        "BucketType" : {
+            "Type" : "String",
+            "Description" : "Type of S3 bucket used to store deployed templates",
+            "Default" : "STANDARD",
+            "AllowedValues" : ["GOVERNANCE", "COMPLIANCE", "STANDARD"]
+        }
+    },
+    "Conditions" : {
+        "BucketHasLocking" : {
+            "Fn::Or" : [
+                {
+                    "Fn::Equals" : [
+                        {
+                            "Ref": "BucketType"
+                        },
+                        "GOVERNANCE"
+                    ]
+                },
+                {
+                    "Fn::Equals" : [
+                        {
+                            "Ref": "BucketType"
+                        },
+                        "COMPLIANCE"
+                    ]
+                }
+            ]
         }
     },
     "Resources":{},

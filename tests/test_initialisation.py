@@ -4,6 +4,7 @@ from src.initialisation import BetterCfInstance
 
 class TestInitialisation:
 
+    @mock_cloudformation
     def test_initialize_happy_path(self, monkeypatch):
         
         mock_cfn_create_or_update_args = ()
@@ -80,7 +81,7 @@ class TestInitialisation:
         )
 
         instance = BetterCfInstance()
-        instance.teardown()
+        instance.teardown(empty_bucket_first=True)
 
         assert s3_conn.list_objects_v2(Bucket=get_mocked_management_bucket_name())["KeyCount"] == 0
         assert (
@@ -88,6 +89,8 @@ class TestInitialisation:
             cf_conn.list_stacks()["StackSummaries"][0]["StackStatus"]
             ) == ("BetterCF-management", "DELETE_COMPLETE")
 
+    @mock_s3
+    @mock_cloudformation
     def test_teardown_not_initialised(self):
         instance = BetterCfInstance()
         with pytest.raises(Exception):

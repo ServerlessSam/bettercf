@@ -8,8 +8,7 @@ class TestSystem:
 
     def test_system_init_default_config_path(self):
         sys = System(
-            system_name="foo",
-            version=Version("0.1"),
+            system_name="foo"
         )
         assert sys.dfm_config.destination_file.location.path == "${SYSTEM_NAME}.json"
 
@@ -79,7 +78,6 @@ class TestSystem:
     def test_build_happy_path(self):
         sys = System(
             system_name="foo",
-            version=Version("0.1"),
             dfm_root_path=Path(__file__).parent.joinpath("test_systems")
         )
 
@@ -111,7 +109,7 @@ class TestSystem:
             system_name="foo",
             dfm_root_path=Path(__file__).parent.joinpath("test_systems")
         )
-        sys.push("foo")
+        sys.push(template_str="foo")
 
         obj_in_s3 = conn.get_object(
             Bucket = get_mocked_management_bucket_name(),

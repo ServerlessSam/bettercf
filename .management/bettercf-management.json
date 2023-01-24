@@ -1,0 +1,146 @@
+{
+    "Resources": {
+        "ManagementBucketNameParam": {
+            "Type": "AWS::SSM::Parameter",
+            "Properties": {
+                "Description": "The name of the management bucket for BetterCF",
+                "Name": "/BetterCF/.management/BetterCF-management-bucket-name",
+                "Tier": "Standard",
+                "Type": "String",
+                "Value": {
+                    "Ref": "ManagementBucket"
+                }
+            }
+        },
+        "ManagementBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+                "BucketName": {
+                    "Fn::Join": [
+                        "-",
+                        [
+                            "cf-management-bucket",
+                            {
+                                "Fn::Select": [
+                                    4,
+                                    {
+                                        "Fn::Split": [
+                                            "-",
+                                            {
+                                                "Fn::Select": [
+                                                    2,
+                                                    {
+                                                        "Fn::Split": [
+                                                            "/",
+                                                            {
+                                                                "Ref": "AWS::StackId"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                },
+                "ObjectLockConfiguration": {
+                    "Fn::If": [
+                        "BucketHasLocking",
+                        {
+                            "ObjectLockEnabled": "Enabled",
+                            "Rule": {
+                                "DefaultRetention": {
+                                    "Years": 10,
+                                    "Mode": {
+                                        "Ref": "BucketType"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "Ref": "AWS::NoValue"
+                        }
+                    ]
+                },
+                "ObjectLockEnabled": {
+                    "Fn::If": [
+                        "BucketHasLocking",
+                        true,
+                        false
+                    ]
+                },
+                "OwnershipControls": {
+                    "Rules": [
+                        {
+                            "ObjectOwnership": "BucketOwnerEnforced"
+                        }
+                    ]
+                },
+                "PublicAccessBlockConfiguration": {
+                    "BlockPublicAcls": true,
+                    "BlockPublicPolicy": true,
+                    "IgnorePublicAcls": true,
+                    "RestrictPublicBuckets": true
+                },
+                "VersioningConfiguration": {
+                    "Status": "Enabled"
+                }
+            }
+        }
+    },
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "A management template. Deployed via `... init` (TODO)",
+    "Parameters": {
+        "BucketName": {
+            "Type": "String",
+            "Description": "Name of S3 bucket used to store deployed templates",
+            "Default": "cf-manangement-bucket"
+        },
+        "BucketType": {
+            "Type": "String",
+            "Description": "Type of S3 bucket used to store deployed templates",
+            "Default": "STANDARD",
+            "AllowedValues": [
+                "GOVERNANCE",
+                "COMPLIANCE",
+                "STANDARD"
+            ]
+        }
+    },
+    "Conditions": {
+        "BucketHasLocking": {
+            "Fn::Or": [
+                {
+                    "Fn::Equals": [
+                        {
+                            "Ref": "BucketType"
+                        },
+                        "GOVERNANCE"
+                    ]
+                },
+                {
+                    "Fn::Equals": [
+                        {
+                            "Ref": "BucketType"
+                        },
+                        "COMPLIANCE"
+                    ]
+                }
+            ]
+        }
+    },
+    "Outputs": {
+        "ManagementBucketName": {
+            "Description": "Name of S3 bucket used to store deployed templates",
+            "Value": {
+                "Ref": "ManagementBucket"
+            },
+            "Export": {
+                "Name": "CfManagementBucketName"
+            }
+        }
+    }
+}

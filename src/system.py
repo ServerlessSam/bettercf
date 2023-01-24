@@ -6,24 +6,15 @@ from src.version import Version
 from dfm.config import BuildConfig
 class System():
     name: str
-    version: Version
     dfm_config: BuildConfig
 
     def __init__(
         self,
         system_name:str,
-        version:Version=None,
         dfm_config_file_path:Path=Path(__file__).parent.parent.joinpath(".dfm/template_builder.json").resolve(),
         dfm_root_path:Path=Path(__file__).parent.parent.resolve()
     ):
-        
         self.name = system_name
-        if not version:
-            self.version = Version(System.detect_latest_version(system_name))
-            self.version.auto_increment_version()
-        else:
-            self.version = version
-
         self.dfm_config = BuildConfig.load_config_from_file(
             file_path = dfm_config_file_path,
             root_path = dfm_root_path,
@@ -32,16 +23,30 @@ class System():
             }
         )
 
-    def push(self, body_str:str=None):
+    def push(self, version:Version=None, template_str:str=None):
+
+        if not template_str:
+            template_str = json.dumps(JsonFileType.load_from_file(self.dfm_config.root_path / self.dfm_config.destination_file.location.substituted_path)).encode('utf-8')
+        
+        if not version:
+            version = Version(System.detect_latest_version(self.name))
+            version.auto_increment_version()
+
+        System.push_mechanism(self.name, version, template_str)
+        
+        return
+ 
+    @staticmethod
+    def push_mechanism(name:str, version:Version, template_str:str):
         BUCKET_NAME = get_management_bucket_name()
         s3_client = boto3.client('s3')
         s3_client.put_object(
-            Body=body_str if body_str else json.dumps(JsonFileType.load_from_file(self.dfm_config.root_path / self.dfm_config.destination_file.location.substituted_path)).encode('utf-8'),
+            Body=template_str,
             Bucket=BUCKET_NAME,
-            Key=f"{self.name}/{self.version.get_version_string()}"
+            Key=f"{name}/{version.get_version_string()}"
         )
         return
- 
+
     def build(self):
         return self.dfm_config.build()
     

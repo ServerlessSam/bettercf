@@ -12,6 +12,7 @@ from dataclasses import dataclass, field
 class Config():
     version : Version
     system : System
+    system_version : Version
     env_type : str
     region : Region
     identifier : str
@@ -28,7 +29,7 @@ class Config():
         # Check parameters
         
         STACK_NAME = self.generate_stack_name()
-        object_key = f'{self.system.name}/{self.system.version.get_version_string()}'
+        object_key = f'{self.system.name}/{self.system_version.get_version_string()}'
 
         boto3_kwargs = {
             "StackName" : STACK_NAME,
@@ -128,9 +129,9 @@ class Config():
         return Config(
             version=Version(config_dict["Version"]),
             system=System(
-                system_name=config_dict["System"]["Name"],
-                version=Version(config_dict["System"]["Version"])
+                system_name=config_dict["System"]["Name"]
             ),
+            system_version=Version(config_dict["System"]["Version"]),
             env_type=config_dict["EnvType"],
             region=Region(name=config_dict["Region"]),
             identifier=config_dict["Identifier"],

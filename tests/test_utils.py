@@ -162,7 +162,7 @@ class TestUtils:
         )
         cfn_delete_stack("foo")
         conn = boto3.client("cloudformation")
-        assert not conn.list_stacks()["StackSummaries"]
+        assert conn.list_stacks()["StackSummaries"][0]["StackStatus"] == "DELETE_COMPLETE"
 
     def test_is_non_empty_string_happy_path(self):
         string = 'foo'

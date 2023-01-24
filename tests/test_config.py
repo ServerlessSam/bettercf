@@ -16,8 +16,8 @@ class TestConfig:
         assert cfg.template_parameters == {}
         assert cfg.resource_overrides == {}
         assert not cfg.role_arn
-        assert cfg.system.name == System(system_name="foo", version=Version("0.1")).name
-        assert cfg.system.version.get_version_string() == System(system_name="foo", version=Version("0.1")).version.get_version_string()
+        assert cfg.system.name == System(system_name="foo").name
+        assert cfg.system_version.get_version_string() == Version("0.1").get_version_string()
 
     def test_load_config_from_file_missing_some_attributes_errors(self):
         with pytest.raises(Exception):

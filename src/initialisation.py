@@ -10,7 +10,7 @@ class BetterCfInstance():
         Deploys the init stack to the management AWS account. 
         This stack mostly contains the S3 bucket that future deployments will send their templates to.
     '''
-    def initialise(self):
+    def initialise(self, mode:str="STANDARD"):
         STACK_NAME = "BetterCF-management"
 
         cfg = BuildConfig.load_config_from_file(
@@ -25,6 +25,12 @@ class BetterCfInstance():
         boto3_kwargs = {
             "StackName" : STACK_NAME,
             "TemplateBody" : str(template),
+            "Parameters" : [
+                {
+                    'ParameterKey': 'BucketType',
+                    'ParameterValue': mode,
+                }
+            ],
             # "Capabilities" : [
             #     "CAPABILITY_AUTO_EXPAND",
             #     "CAPABILITY_NAMED_IAM"
@@ -34,11 +40,12 @@ class BetterCfInstance():
 
         cfn_create_or_update(STACK_NAME, boto3_kwargs)
 
-    def teardown(self):
+    def teardown(self, empty_bucket_first:bool=False):
         BUCKET_NAME= get_management_bucket_name()
         STACK_NAME = "BetterCF-management"
-        s3 = boto3.resource('s3')
-        bucket = s3.Bucket(BUCKET_NAME)
-        bucket.object_versions.delete() # Note this will fail for governance mode buckets
+        if empty_bucket_first:
+            s3 = boto3.resource('s3')
+            bucket = s3.Bucket(BUCKET_NAME)
+            bucket.object_versions.delete() # Note this will fail for governance mode buckets
         cfn_delete_stack(STACK_NAME)
         return
