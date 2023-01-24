@@ -97,7 +97,7 @@ def main():
             template = System(args.name, Path(args.dfm_config_path), Path(args.dfm_root_path))
             template.build()
         elif args.secondary_subparser_name == "push":
-            System.push_mechanism(name=args.name, version=Version(args.template_version), body_str=json.dumps(JsonFileType.load_from_file(args.template_path)).encode("utf-8"))
+            System.push_mechanism(name=args.name, version=Version(args.template_version), template_str=json.dumps(JsonFileType.load_from_file(args.template_path)).encode("utf-8"))
         else:
             raise Exception(f"CLI command ({args.main_subparser_name} {args.secondary_subparser_name}) is not recognized.")
     elif args.main_subparser_name == "stack":
