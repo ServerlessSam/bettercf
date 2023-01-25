@@ -1,13 +1,13 @@
 {
     "Version" : "1.0",
-    "System" : {
+    "Template" : {
         "Name" : "foo",
-        "Version" : "0.1"
+        "Version" : "2.3"
     },
     "EnvType" : "Prod",
     "Region" : "eu-west-2",
     "Identifier" : "bar",
-    "RoleArn" : "",
+    "RoleArn" : null,
     "TemplateParameters" : {},
     "ResourceOverrides" : {}
 }

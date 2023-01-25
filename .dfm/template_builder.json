@@ -2,11 +2,11 @@
     "SourceFiles" : [
         {
             "SourceFileLocation" : {
-                "Path" : "systems/${SYSTEM_NAME}/resources/**/*.json",
+                "Path" : "templates/${TEMPLATE_NAME}/resources/**/*.json",
                 "PathSubs" : {
-                    "SYSTEM_NAME" : {
+                    "TEMPLATE_NAME" : {
                         "Type" : "Parameter",
-                        "Value" : "SystemName"
+                        "Value" : "TemplateName"
                     }
                 }
             },
@@ -15,11 +15,11 @@
         },
         {
             "SourceFileLocation" : {
-                "Path" : "systems/${SYSTEM_NAME}/base_template.json",
+                "Path" : "templates/${TEMPLATE_NAME}/base_template.json",
                 "PathSubs" : {
-                    "SYSTEM_NAME" : {
+                    "TEMPLATE_NAME" : {
                         "Type" : "Parameter",
-                        "Value" : "SystemName"
+                        "Value" : "TemplateName"
                     }
                 }
             },
@@ -29,11 +29,11 @@
     ],
     "DestinationFile" : {
         "DestinationFileLocation" : {
-            "Path" : "${SYSTEM_NAME}.json",
+            "Path" : "${TEMPLATE_NAME}.json",
             "PathSubs" : {
-                "SYSTEM_NAME" : {
+                "TEMPLATE_NAME" : {
                     "Type" : "Parameter",
-                    "Value" : "SystemName"
+                    "Value" : "TemplateName"
                 }
             }
         }

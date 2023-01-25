@@ -3,38 +3,10 @@ import os
 import platform, json
 from pathlib import Path
 from src.initialisation import BetterCfInstance
-from src.system import System
+from src.template import Template
 from dfm.file_types import JsonFileType
-from src.config import Config
+from src.stack import Stack
 from src.version import Version
-
-
-def get_root_path_from_env_var(env_var_name: str) -> Path:
-    os_default_root_path_mapping = {
-        "Windows": "c://",
-        "Darwin": "/",
-        "Linux": "/",
-        "Java": "/",
-        "": "/",
-    }
-    return Path(
-        os.getenv(
-            env_var_name, os_default_root_path_mapping.get(platform.system(), "/")
-        )
-    )
-
-
-"""
-Usage:
-------
-    $ dfm [options] [local path to config file]
-Available options are:
-    -h, --help          Show this help
-    -p, --parameters    Parameters to feed into your config (key1:value1,key2:value2...)
---------
-- data-file-merge v0.1.0
-"""
-
 
 def main():
 
@@ -83,7 +55,7 @@ def main():
 
     # create sub-command "deploy" for sub-command cool
     parser_stack_deploy = stack_sub_parsers.add_parser('deploy', help='(optional step if using DFM) build template from directory files.')
-    parser_stack_deploy.add_argument('--config-path', '-c', required=True, help='complete path to the stack config file.')
+    parser_stack_deploy.add_argument('--stack-config-path', '-c', required=True, help='complete path to the stack config file.')
     
     args = parser.parse_args()
     if args.main_subparser_name == "init":
@@ -94,15 +66,15 @@ def main():
         cf.teardown(args.force)
     elif args.main_subparser_name == "template":
         if args.secondary_subparser_name == "build":
-            template = System(args.name, Path(args.dfm_config_path), Path(args.dfm_root_path))
+            template = Template(args.name, Path(args.dfm_config_path), Path(args.dfm_root_path))
             template.build()
         elif args.secondary_subparser_name == "push":
-            System.push_mechanism(name=args.name, version=Version(args.template_version), template_str=json.dumps(JsonFileType.load_from_file(args.template_path)).encode("utf-8"))
+            Template.push_mechanism(name=args.name, version=Version(args.template_version), template_str=json.dumps(JsonFileType.load_from_file(args.template_path)).encode("utf-8"))
         else:
             raise Exception(f"CLI command ({args.main_subparser_name} {args.secondary_subparser_name}) is not recognized.")
     elif args.main_subparser_name == "stack":
         if args.secondary_subparser_name == "deploy":
-            cfg = Config.load_config_from_file(Path(args.config_path))
+            cfg = Stack.load_stack_config_from_file(Path(args.stack_config_path))
             cfg.deploy()
         else:
             raise Exception(f"CLI command ({args.main_subparser_name} {args.secondary_subparser_name}) is not recognized.")

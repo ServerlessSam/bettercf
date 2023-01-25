@@ -1,11 +1,11 @@
 {
     "Version" : "1.0",
-    "System" : {
+    "Template" : {
         "Name" : "foo",
         "Version" : "0.1"
     },
     "EnvType" : "Prod",
-    "Region" : "eu-west-2",
+    "Region" : "",
     "Identifier" : "bar",
     "RoleArn" : null,
     "TemplateParameters" : {},

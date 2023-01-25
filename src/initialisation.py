@@ -17,7 +17,7 @@ class BetterCfInstance():
             file_path=Path(__file__).parent.parent.joinpath(".dfm/template_builder.json").resolve(),
             root_path=Path(__file__).parent.parent.joinpath(".management").resolve(),
             parameters={
-                "SystemName" : "bettercf-management"
+                "TemplateName" : "bettercf-management"
             }
         )
         template = cfg.build()

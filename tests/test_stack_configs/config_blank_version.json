@@ -1,8 +1,8 @@
 {
-    "Version" : "1.0",
-    "System" : {
+    "Version" : "",
+    "Template" : {
         "Name" : "foo",
-        "Version" : ""
+        "Version" : "0.1"
     },
     "EnvType" : "Prod",
     "Region" : "eu-west-2",

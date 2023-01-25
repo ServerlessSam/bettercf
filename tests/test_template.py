@@ -1,16 +1,16 @@
-from src.system import System
+from src.template import Template
 from src.version import Version
 from moto import mock_s3
 import boto3, pytest, os, json
 from pathlib import Path
 
-class TestSystem:
+class TestTemplate:
 
-    def test_system_init_default_config_path(self):
-        sys = System(
-            system_name="foo"
+    def test_template_init_default_config_path(self):
+        sys = Template(
+            template_name="foo"
         )
-        assert sys.dfm_config.destination_file.location.path == "${SYSTEM_NAME}.json"
+        assert sys.dfm_config.destination_file.location.path == "${TEMPLATE_NAME}.json"
 
     @mock_s3
     def test_detect_latest_version_happy_path(self, monkeypatch):
@@ -18,7 +18,7 @@ class TestSystem:
         def get_mocked_management_bucket_name():
             return "cf-management-bucket-123456789"
 
-        monkeypatch.setattr("src.system.get_management_bucket_name", get_mocked_management_bucket_name)
+        monkeypatch.setattr("src.template.get_management_bucket_name", get_mocked_management_bucket_name)
 
         # Create mocked S3 bucket
         conn = boto3.client("s3", region_name="us-east-1")
@@ -30,7 +30,7 @@ class TestSystem:
             Bucket = get_mocked_management_bucket_name(),
             Key = "foo/0.1"
         )
-        assert System.detect_latest_version("foo") == "0.1"
+        assert Template.detect_latest_version("foo") == "0.1"
 
     @mock_s3
     def test_detect_latest_version_empty_bucket(self, monkeypatch):
@@ -38,7 +38,7 @@ class TestSystem:
         def get_mocked_management_bucket_name():
             return "cf-management-bucket-123456789"
 
-        monkeypatch.setattr("src.system.get_management_bucket_name", get_mocked_management_bucket_name)
+        monkeypatch.setattr("src.template.get_management_bucket_name", get_mocked_management_bucket_name)
 
         # Create mocked S3 bucket
         conn = boto3.client("s3", region_name="us-east-1")
@@ -46,7 +46,7 @@ class TestSystem:
             Bucket = get_mocked_management_bucket_name()
         )
         with pytest.raises(Exception):
-            System.detect_latest_version("foo")
+            Template.detect_latest_version("foo")
 
     @mock_s3
     def test_detect_latest_version_bad_version_name(self, monkeypatch):
@@ -54,7 +54,7 @@ class TestSystem:
         def get_mocked_management_bucket_name():
             return "cf-management-bucket-123456789"
 
-        monkeypatch.setattr("src.system.get_management_bucket_name", get_mocked_management_bucket_name)
+        monkeypatch.setattr("src.template.get_management_bucket_name", get_mocked_management_bucket_name)
 
         # Create mocked S3 bucket
         conn = boto3.client("s3", region_name="us-east-1")
@@ -72,13 +72,13 @@ class TestSystem:
             Key = "foo/bar"
         )
         with pytest.raises(Exception):
-            System.detect_latest_version("foo")
+            Template.detect_latest_version("foo")
 
     
     def test_build_happy_path(self):
-        sys = System(
-            system_name="foo",
-            dfm_root_path=Path(__file__).parent.joinpath("test_systems")
+        sys = Template(
+            template_name="foo",
+            dfm_root_path=Path(__file__).parent.joinpath("test_templates")
         )
 
         built = sys.build()
@@ -92,7 +92,7 @@ class TestSystem:
         def get_mocked_management_bucket_name():
             return "cf-management-bucket-123456789"
 
-        monkeypatch.setattr("src.system.get_management_bucket_name", get_mocked_management_bucket_name)
+        monkeypatch.setattr("src.template.get_management_bucket_name", get_mocked_management_bucket_name)
 
         # Create mocked S3 bucket
         conn = boto3.client("s3", region_name="us-east-1")
@@ -105,9 +105,9 @@ class TestSystem:
             Key = "foo/0.1"
         )
         
-        sys = System(
-            system_name="foo",
-            dfm_root_path=Path(__file__).parent.joinpath("test_systems")
+        sys = Template(
+            template_name="foo",
+            dfm_root_path=Path(__file__).parent.joinpath("test_templates")
         )
         sys.push(template_str="foo")
 
@@ -123,7 +123,7 @@ class TestSystem:
         def get_mocked_management_bucket_name():
             return "cf-management-bucket-123456789"
 
-        monkeypatch.setattr("src.system.get_management_bucket_name", get_mocked_management_bucket_name)
+        monkeypatch.setattr("src.template.get_management_bucket_name", get_mocked_management_bucket_name)
 
         # Create mocked S3 bucket
         conn = boto3.client("s3", region_name="us-east-1")
@@ -136,9 +136,9 @@ class TestSystem:
             Key = "foo/0.1"
         )
         
-        sys = System(
-            system_name="foo",
-            dfm_root_path=Path(__file__).parent.joinpath("test_systems")
+        sys = Template(
+            template_name="foo",
+            dfm_root_path=Path(__file__).parent.joinpath("test_templates")
         )
         sys.build()
         sys.push()

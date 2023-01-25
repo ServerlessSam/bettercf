@@ -1,4 +1,4 @@
-from src.system import System
+from src.template import Template
 from src.account import Account
 import json
 from pathlib import Path
@@ -9,10 +9,10 @@ from src.region import Region
 from dataclasses import dataclass, field
 
 @dataclass
-class Config():
+class Stack():
     version : Version
-    system : System
-    system_version : Version
+    template : Template
+    template_version : Version
     env_type : str
     region : Region
     identifier : str
@@ -29,7 +29,7 @@ class Config():
         # Check parameters
         
         STACK_NAME = self.generate_stack_name()
-        object_key = f'{self.system.name}/{self.system_version.get_version_string()}'
+        object_key = f'{self.template.name}/{self.template_version.get_version_string()}'
 
         boto3_kwargs = {
             "StackName" : STACK_NAME,
@@ -66,20 +66,20 @@ class Config():
 
     def generate_stack_name(self):
         return "-".join([
-            self.system.name,
+            self.template.name,
             self.env_type,
             self.region.code,
             self.identifier
         ]).lower()
 
     @staticmethod
-    def load_config_from_file(file_path:Path):
-        config_dict = JsonFileType.load_from_file(file_path)
+    def load_stack_config_from_file(file_path:Path):
+        stack_config_dict = JsonFileType.load_from_file(file_path)
 
         # Check for unexpected keys
         ALL_EXPECTED_KEYS = [
             "Version",
-            "System",
+            "Template",
             "EnvType",
             "Region",
             "Identifier",
@@ -87,14 +87,14 @@ class Config():
             "TemplateParameters",
             "ResourceOverrides"
         ]
-        for key in config_dict:
+        for key in stack_config_dict:
             if key not in ALL_EXPECTED_KEYS:
-                raise Exception("Unexpected key '{key}' detected in config file.")
+                raise Exception("Unexpected key '{key}' detected in stack config file.")
 
         # Check all expected keys are present
         for key in ALL_EXPECTED_KEYS:
-            if key not in config_dict:
-                raise Exception(f"Config Parsing Failure: Config file is missing required {key} key.")
+            if key not in stack_config_dict:
+                raise Exception(f"Stack Config Parsing Failure: Stack config file is missing required {key} key.")
 
         # String key checks
         STRING_KEYS=[
@@ -105,38 +105,38 @@ class Config():
         ]
 
         for key in STRING_KEYS:
-            if not is_non_empty_string(config_dict[key]):
-                raise Exception(f'Config Parsing Failure: Config {key} value: {config_dict[key]} must be a non-empty string.')
+            if not is_non_empty_string(stack_config_dict[key]):
+                raise Exception(f'Stack Config Parsing Failure: Stack config {key} value: {stack_config_dict[key]} must be a non-empty string.')
     
-        # System checks
-        SYSTEM_KEYS = ["Name", "Version"]
-        for key in SYSTEM_KEYS:
-            if key not in config_dict["System"]:
-                raise Exception(f"Config Parsing Failure: Config file's System is missing required {key} key.")
-            if not is_non_empty_string(config_dict["System"][key]):
-                raise Exception(f'Config Parsing Failure: Config system\'s {key} value: {config_dict["System"][key]} must be a non-empty string.')
+        # Template checks
+        TEMPLATE_KEYS = ["Name", "Version"]
+        for key in TEMPLATE_KEYS:
+            if key not in stack_config_dict["Template"]:
+                raise Exception(f"Stack Config Parsing Failure: Stack config file's Template is missing required {key} key.")
+            if not is_non_empty_string(stack_config_dict["Template"][key]):
+                raise Exception(f'Stack Config Parsing Failure: Stack config Template\'s {key} value: {stack_config_dict["Template"][key]} must be a non-empty string.')
         
         # Role Arn checks
-        if not (is_non_empty_string(config_dict["RoleArn"]) or config_dict["RoleArn"] == None):
-            raise Exception(f'Config Parsing Failure: Config RoleArn value {config_dict["RoleArn"]} must be a non-empty string or null.')
+        if not (is_non_empty_string(stack_config_dict["RoleArn"]) or stack_config_dict["RoleArn"] == None):
+            raise Exception(f'Stack Config Parsing Failure: Stack config RoleArn value {stack_config_dict["RoleArn"]} must be a non-empty string or null.')
 
         # Dict key checks
         EXPECTED_DICT_KEYS = ["TemplateParameters", "ResourceOverrides"]
         for key in EXPECTED_DICT_KEYS:
-            if not (type(config_dict[key]) == dict or config_dict[key] == None):
-                raise Exception(f'Config Parsing Failure: Config {key} value {str(config_dict[key])} must be a dictionary or null.')
+            if not (type(stack_config_dict[key]) == dict or stack_config_dict[key] == None):
+                raise Exception(f'Stack Config Parsing Failure: Stack config {key} value {str(stack_config_dict[key])} must be a dictionary or null.')
 
-        return Config(
-            version=Version(config_dict["Version"]),
-            system=System(
-                system_name=config_dict["System"]["Name"]
+        return Stack(
+            version=Version(stack_config_dict["Version"]),
+            template=Template(
+                template_name=stack_config_dict["Template"]["Name"]
             ),
-            system_version=Version(config_dict["System"]["Version"]),
-            env_type=config_dict["EnvType"],
-            region=Region(name=config_dict["Region"]),
-            identifier=config_dict["Identifier"],
+            template_version=Version(stack_config_dict["Template"]["Version"]),
+            env_type=stack_config_dict["EnvType"],
+            region=Region(name=stack_config_dict["Region"]),
+            identifier=stack_config_dict["Identifier"],
             #account=config_dict["Account"],
-            role_arn=config_dict["RoleArn"],
-            template_parameters=config_dict["TemplateParameters"],
-            resource_overrides=config_dict["ResourceOverrides"]
+            role_arn=stack_config_dict["RoleArn"],
+            template_parameters=stack_config_dict["TemplateParameters"],
+            resource_overrides=stack_config_dict["ResourceOverrides"]
         )
