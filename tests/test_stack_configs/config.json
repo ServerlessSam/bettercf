@@ -2,7 +2,7 @@
     "Version" : "1.0",
     "Template" : {
         "Name" : "foo",
-        "Version" : "2.3"
+        "Version" : "0.1"
     },
     "EnvType" : "Prod",
     "Region" : "eu-west-2",

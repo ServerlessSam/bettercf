@@ -64,6 +64,7 @@ class TestUtils:
         conn = boto3.client("ssm")
         conn.put_parameter(
             Name="/BetterCF/.management/BetterCF-management-bucket-name",
+            Type="String",
             Value="foo"
         )
 
@@ -81,6 +82,7 @@ class TestUtils:
         ssm_conn = boto3.client("ssm")
         ssm_conn.put_parameter(
             Name="/BetterCF/.management/BetterCF-management-bucket-name",
+            Type="String",
             Value="foo"
         )
         s3_conn = boto3.client("s3", region_name="us-east-1")
