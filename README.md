@@ -58,6 +58,6 @@ All stack configuration files are checked into source control. This contains all
 
 Your stack configuration file contains a `ResourceOverrides` section. You can use this section to make any changes to resources from the referenced template, without making those changes to the template itself. **(Note this is coming soon!)**
   
-### Cloudformation usage is very difficult to audit and maintain compliance
+## Cloudformation usage is very difficult to audit and maintain compliance
 
 When your initialize BetterCF, you have the options to use `Standard`, `Govern` or `Compliance` mode. Each coming with more restrictions than the previous. In compliance mode, your templates pushed into the BetterCF template repository are **immutable**. And your git history is your breadcrumb trail of what changes were made to your Cloudformation stacks, when, and by who.
