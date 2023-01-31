@@ -73,10 +73,7 @@ class TestTemplate:
             dfm_root_path=Path(__file__).parent.joinpath("test_templates"),
         )
 
-        built = sys.build()
-        os.remove(
-            str(sys.dfm_config.destination_file.location.root_path / "foo.json")
-        )  # TODO add option to dfm.config.build() to not write to file and use this instead.
+        built = sys.build(save_to_local_file=False)
 
         assert "FooBucket" in built["Resources"]
         assert "AWSTemplateFormatVersion" in built

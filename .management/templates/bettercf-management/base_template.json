@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion":"2010-09-09",
-    "Description":"A management template. Deployed via `... init` (TODO)",
+    "Description":"The BetterCF management template. Deploying the S3 bucket used as the BetterCF Template Repository.",
     "Parameters":{
         "BucketName" : {
             "Type" : "String",
