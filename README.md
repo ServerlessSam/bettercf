@@ -39,22 +39,22 @@ This command only needed one argument because **your stack configuration file co
 
 See the `/examples` directory at the root of this repository.
 
-## Why Use BetterCF
+# Why Use BetterCF
 
 Problems using Cloudformation natively and how BetterCF solve these problems:
-### There is no working 'out of the box' solution to automate deploying your stacks from day one
+## There is no working 'out of the box' solution to automate deploying your stacks from day one
 
 BetterCF provides the CI/CD automation required to get your stacks deploying via automation in minutes. It works by utilising it's CLI (which you can embed in your CI/CD pipeline yourself if you like!). Once everything is set up, you can release Cloudformation templates in the same way you release software and roll out those updates to new/existing stacks by simply creating/updating a stack configuration file in source control.
   
-### Cloudformation does not support versioning your templates
+## Cloudformation does not support versioning your templates
 
 BetterCF versions your **templates** when you 'push' them into the BetterCF template repository. It also versions your **stacks** when you 'deploy' them. The process is identical to how we all version our software and reference dependencies.
   
-### How can you manage multiple environments that are relying on a single Cloudformation template? How do you ensure your envs are being updated as the template evolves over time?
+## How can you manage multiple environments that are relying on a single Cloudformation template? How do you ensure your envs are being updated as the template evolves over time?
 
 All stack configuration files are checked into source control. This contains all the information you need in order to determine the state of every Cloudformation stack. Want to update your configuration (e.g use a newer version of a template)? Update the config file, raise a PR and merge!
   
-### How do you support a use case where you need to deploy a stack with a slight variation from your established template? E.g A dev asks: 'can you deploy a version of App X for me to debug but enable SSH access?'
+## How do you support a use case where you need to deploy a stack with a slight variation from your established template? E.g A dev asks: 'can you deploy a version of App X for me to debug but enable SSH access?'
 
 Your stack configuration file contains a `ResourceOverrides` section. You can use this section to make any changes to resources from the referenced template, without making those changes to the template itself. **(Note this is coming soon!)**
   
