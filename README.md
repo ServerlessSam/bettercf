@@ -4,7 +4,7 @@ A CLI tool to improve your experience with Cloudformation templates and stacks.
 
 # Installation Instructions
 
-Each release of bettercf comes with a CLI binary for Windows, Mac and Linux. [Download the CLI file](https://github.com/ServerlessSam/bettercf/releases) required for your operating system. Finally, make sure that the dfm binary is available on your PATH. This process will differ depending on your operating system. See instructions for [mac/linux](https://stackoverflow.com/questions/14637979/how-to-permanently-set-path-on-linux-unix) and [windows](https://stackoverflow.com/questions/1618280/where-can-i-set-path-to-make-exe-on-windows).
+Each release of bettercf comes with a CLI binary for Windows, Mac and Linux. [Download the CLI file](https://github.com/ServerlessSam/bettercf/releases) required for your operating system. Finally, make sure that the dfm binary is available on your `PATH`. This process will differ depending on your operating system. See instructions for [mac/linux](https://stackoverflow.com/questions/14637979/how-to-permanently-set-path-on-linux-unix) and [windows](https://stackoverflow.com/questions/1618280/where-can-i-set-path-to-make-exe-on-windows).
 
 To use the `init` and `push` mechanisms, ensure your environment is [configured with AWS credentials](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html). Ensure you are either using the `aws configure`, env var or default profile methods.
 
