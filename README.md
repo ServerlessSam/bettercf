@@ -11,7 +11,7 @@ To use the `init` and `push` mechanisms, ensure your environment is [configured 
 # Basic Usage
 
 ## Build Templates (Optional Step)
-BetterCF allows you to use [data-file-merge (dfm)](https://github.com/ServerlessSam/data-file-merge) (also created by [@ServerlessSam](https://github.com/ServerlessSam)) to optionally build your Cloudformation template file from a directory tree.
+BetterCF allows you to use [data-file-merge (dfm)](https://github.com/ServerlessSam/data-file-merge) (also created by [@ServerlessSam](https://github.com/ServerlessSam)) to optionally build your Cloudformation template file from a directory tree. See [example 1](https://github.com/ServerlessSam/bettercf/tree/main/examples) from the repository for a complete example and required directory structure.
 
 ```bash
 bettercf template build --name MyAppStack --dfm-config-path /foo/bar/.dfm/config.json --dfm-root-path /foo/bar/mytemplates 
