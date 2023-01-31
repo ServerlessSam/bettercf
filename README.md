@@ -16,7 +16,7 @@ BetterCF allows you to use [data-file-merge (dfm)](https://github.com/Serverless
 ```bash
 bettercf template build --name MyAppStack --dfm-config-path /foo/bar/.dfm/config.json --dfm-root-path /foo/bar/mytemplates 
 ```
-This will merge your directory tree into a single cloudformation template file. The logic used and location of merged file are dictated by the contents of `config.json`
+This will merge your directory tree into a single cloudformation template file. The logic used and location of merged file are dictated by the contents of `config.json`.
 
 ## Push Templates
 BetterCF needs you to push your templates into it's template repository. Similar to `docker push` pushing docker images into a container repository.
