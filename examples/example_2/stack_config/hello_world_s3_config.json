@@ -1,12 +1,12 @@
 {
     "Version" : "0.1",
     "Template" : {
-        "Name" : "foo",
+        "Name" : "hello-world-bucket",
         "Version" : "1.0"
     },
-    "EnvType" : "Test",
+    "EnvType" : "Prod",
     "Region" : "eu-west-2",
-    "Identifier" : "bar",
+    "Identifier" : "example2",
     "RoleArn" : null,
     "TemplateParameters" : {},
     "ResourceOverrides" : {}

@@ -24,7 +24,7 @@ class BetterCfInstance:
             root_path=Path(__file__).parent.parent.joinpath(".management").resolve(),
             parameters={"TemplateName": "bettercf-management"},
         )
-        template = cfg.build()
+        template = cfg.build(save_to_local_file=False)
 
         boto3_kwargs = {
             "StackName": STACK_NAME,
