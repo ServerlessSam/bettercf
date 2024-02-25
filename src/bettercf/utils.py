@@ -2,7 +2,7 @@ import time
 
 import boto3
 
-from src.version import Version
+from bettercf.version import Version
 
 
 def get_latest_version(versions: list[str]):

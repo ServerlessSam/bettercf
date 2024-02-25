@@ -4,14 +4,14 @@ from pathlib import Path
 
 from dfm.file_types import JsonFileType
 
-from src.region import Region
-from src.template import Template
-from src.utils import (
+from bettercf.region import Region
+from bettercf.template import Template
+from bettercf.utils import (
     cfn_create_or_update,
     get_management_bucket_url,
     is_non_empty_string,
 )
-from src.version import Version
+from bettercf.version import Version
 
 
 @dataclass

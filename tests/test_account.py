@@ -1,4 +1,4 @@
-from src.account import Account
+from bettercf.account import Account
 
 
 class TestAccount:

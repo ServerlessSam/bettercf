@@ -1,6 +1,6 @@
 import pytest
 
-from src.region import Region
+from bettercf.region import Region
 
 
 class TestRegion:

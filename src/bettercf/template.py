@@ -5,8 +5,8 @@ import boto3
 from dfm.config import BuildConfig
 from dfm.file_types import JsonFileType
 
-from src.utils import get_latest_version, get_management_bucket_name
-from src.version import Version
+from bettercf.utils import get_latest_version, get_management_bucket_name
+from bettercf.version import Version
 
 
 class Template:

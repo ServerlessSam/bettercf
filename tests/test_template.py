@@ -6,7 +6,7 @@ import boto3
 import pytest
 from moto import mock_s3
 
-from src.template import Template
+from src.bettercf.template import Template
 
 
 class TestTemplate:

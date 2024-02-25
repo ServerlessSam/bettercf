@@ -2,7 +2,7 @@ import boto3
 import pytest
 from moto import mock_cloudformation, mock_s3
 
-from src.initialisation import BetterCfInstance
+from src.bettercf.initialisation import BetterCfInstance
 
 
 class TestInitialisation:

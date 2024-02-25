@@ -2,10 +2,10 @@ from pathlib import Path
 
 import pytest
 
-from src.region import Region
-from src.stack import Stack
-from src.template import Template
-from src.version import Version
+from src.bettercf.region import Region
+from src.bettercf.stack import Stack
+from src.bettercf.template import Template
+from src.bettercf.version import Version
 
 
 class TestStack:

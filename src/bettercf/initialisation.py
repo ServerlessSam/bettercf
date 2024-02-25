@@ -3,7 +3,7 @@ from pathlib import Path
 import boto3
 from dfm.config import BuildConfig
 
-from src.utils import cfn_create_or_update, cfn_delete_stack, get_management_bucket_name
+from bettercf.utils import cfn_create_or_update, cfn_delete_stack, get_management_bucket_name
 
 
 class BetterCfInstance:

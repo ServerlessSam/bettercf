@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "cloudformation-state-management"
+name = "bettercf"
 version = "0.1.0"
 description = ""
 authors = ["ServerlessSam <samuel.t.lock@gmail.com>"]

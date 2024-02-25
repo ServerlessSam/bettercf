@@ -2,7 +2,7 @@ import boto3
 import pytest
 from moto import mock_cloudformation, mock_s3, mock_ssm
 
-from src.utils import (
+from src.bettercf.utils import (
     cfn_create_or_update,
     cfn_delete_stack,
     get_latest_version,

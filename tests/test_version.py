@@ -1,6 +1,6 @@
 import pytest
 
-from src.version import Version
+from bettercf.version import Version
 
 
 class TestVersion:
