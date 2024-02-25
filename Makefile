@@ -9,4 +9,4 @@ format-check:
 	poetry run autoflake --in-place --remove-unused-variables --remove-all-unused-imports --recursive --check .
 	poetry run flake8 .
 create-cli:
-	poetry run pyinstaller src/bettercf/cli.py --onefile --name bettercf
+	poetry run pyinstaller src/bettercf/cli.py --onefile --add-data=".dfm/template_builder.json:.dfm" --name bettercf

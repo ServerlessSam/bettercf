@@ -4,10 +4,10 @@ from pathlib import Path
 
 from dfm.file_types import JsonFileType
 
-from src.initialisation import BetterCfInstance
-from src.stack import Stack
-from src.template import Template
-from src.version import Version
+from bettercf.initialisation import BetterCfInstance
+from bettercf.stack import Stack
+from bettercf.template import Template
+from bettercf.version import Version
 
 
 def main():
