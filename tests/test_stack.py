@@ -173,3 +173,28 @@ class TestStack:
         assert mock_cfn_create_or_update_args[1]["Parameters"] == [
             {"ParameterKey": "foo", "ParameterValue": "bar", "UsePreviousValue": False}
         ]
+
+    # def test_deploy_with_overrides(self, monkeypatch):
+        def get_mocked_management_bucket_url():
+            return "https://cf-management-bucket-123456789.s3.us-east-1.amazonaws.com"
+
+        monkeypatch.setattr(
+            "src.stack.get_management_bucket_url", get_mocked_management_bucket_url
+        )
+
+        mock_cfn_create_or_update_args = ()
+
+        # Patch to skip create/update process as that isn't tested here. However we still want to verify it was called.
+        def mock_cfn_create_or_update(STACK_NAME, boto3_kwargs):
+            nonlocal mock_cfn_create_or_update_args
+            mock_cfn_create_or_update_args = (STACK_NAME, boto3_kwargs)
+
+        monkeypatch.setattr("src.stack.cfn_create_or_update", mock_cfn_create_or_update)
+
+        cfg = Stack.load_stack_config_from_file(
+            Path(__file__).parent.joinpath("test_stack_configs/config.json")
+        )
+        cfg.resource_overrides = {"foo": "bar"}
+        cfg.deploy()
+
+        assert mock_cfn_create_or_update_args[1]["TemplateBody"] == {}

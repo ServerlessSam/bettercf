@@ -56,13 +56,14 @@ def cfn_create_or_update(StackName: str, boto3_kwargs: dict):
         print(f"Beginning CloudFormation template update for {StackName}")
         boto3_function = client.update_stack
         boto3_kwargs.pop("OnFailure")
+        boto3_kwargs.pop("TimeoutInMinutes")
 
     # If ClientError if thrown, the stack doesn't exist yet and we need to create_stack
     except client.exceptions.ClientError:
         print(f"Beginning CloudFormation template creation for {StackName}")
         boto3_function = client.create_stack
 
-        boto3_function(**boto3_kwargs)
+    boto3_function(**boto3_kwargs)
 
     stack_state = "IN_PROGRESS"
     while "IN_PROGRESS" in stack_state:

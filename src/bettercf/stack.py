@@ -1,6 +1,7 @@
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
+import boto3
 
 from dfm.file_types import JsonFileType
 
@@ -9,9 +10,11 @@ from bettercf.template import Template
 from bettercf.utils import (
     cfn_create_or_update,
     get_management_bucket_url,
+    get_management_bucket_name,
     is_non_empty_string,
 )
 from bettercf.version import Version
+from bettercf.override import override_resources
 
 
 @dataclass
@@ -39,9 +42,11 @@ class Stack:
             f"{self.template.name}/{self.template_version.get_version_string()}"
         )
 
+        template_url = f"{get_management_bucket_url()}/{object_key}"
+
         boto3_kwargs = {
             "StackName": STACK_NAME,
-            "TemplateURL": f"{get_management_bucket_url()}/{object_key}",
+            "TemplateURL": template_url,
             "TimeoutInMinutes": 30,
             "Capabilities": ["CAPABILITY_AUTO_EXPAND", "CAPABILITY_NAMED_IAM"],
             "OnFailure": "ROLLBACK",
@@ -65,6 +70,22 @@ class Stack:
 
         if local_template_override:
             boto3_kwargs["TemplateBody"] = json.dumps(local_template_override)
+            boto3_kwargs.pop("TemplateURL")
+
+        if self.resource_overrides:
+            data_to_override = {}
+            if local_template_override:
+                data_to_override = json.dumps(local_template_override)
+            else:
+                s3_client = boto3.client("s3")
+                data_to_override = json.loads(
+                    s3_client.get_object(
+                        Bucket = get_management_bucket_name(),
+                        Key = object_key
+                    )["Body"].read().decode('utf-8')
+                )
+            overridden_data = override_resources(data_to_override, self.resource_overrides)
+            boto3_kwargs["TemplateBody"] = json.dumps(overridden_data)
             boto3_kwargs.pop("TemplateURL")
 
         cfn_create_or_update(STACK_NAME, boto3_kwargs)
